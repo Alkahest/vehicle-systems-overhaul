@@ -11,6 +11,7 @@
 	}
   ],
   "manifest": "https://github.com/Alkahest/vehicle-systems-overhaul/blob/main/module.json",
+  "download": "https://github.com/Alkahest/vehicle-systems-overhaul/blob/main/module.rar",
   "compatibility": {
     "minimum": "14",
     "verified": "14"
