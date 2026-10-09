@@ -1,0 +1,43 @@
+{
+  "id": "vehicle-systems-overhaul",
+  "title": "Vehicle Systems Overhaul",
+  "description": "Movement Units updates for Vehicle/Starship Combat",
+  "version": "0.0.1",
+  "authors": [
+    {
+	  "name": "Alkahest",
+	  "discord": ".alkahest",
+	  "flags": {}
+	}
+  ],
+  "manifest": "https://www.dropbox.com/scl/fi/22e93pf74rhjwtlgwa8tu/module.json?rlkey=qi0ab7ar3wcx4an2h2nnzfgvg&st=mjx0g8vp&dl=0"
+  "download": "https://www.dropbox.com/scl/fi/eihbyrx1y2tj7s2tndjxo/vehicle-systems-overhaul.rar?rlkey=798d1r6rrlcdw53pdeiwsuyfp&st=titaxeu7&dl=0"
+  "compatibility": {
+    "minimum": "14",
+    "verified": "14"
+  },
+  "relationships": {
+    "systems": [
+      {
+        "id": "dnd5e",
+        "type": "system",
+        "compatibility": {
+          "minimum": "6.0.6",
+          "verified": "6.0.6"
+        }
+      }
+    ]
+  },
+  "scripts": [
+    "scripts/movement-units.js"
+  ],
+  "esmodules": [
+  ],
+  "languages": [
+    {
+      "lang": "en-US",
+      "name": "English",
+      "path": "lang/en-US.json"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "MOVEMENT": {
+	"UNITS": {
+	  "Hex": {
+		"short": {
+		  "one": "{number} hex",
+		  "other": "{number} hexes"
+		}
+	  }
+	}
+  }
+}
