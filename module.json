@@ -10,8 +10,7 @@
 	  "flags": {}
 	}
   ],
-  "manifest": "https://www.dropbox.com/scl/fi/22e93pf74rhjwtlgwa8tu/module.json?rlkey=qi0ab7ar3wcx4an2h2nnzfgvg&st=mjx0g8vp&dl=0"
-  "download": "https://www.dropbox.com/scl/fi/eihbyrx1y2tj7s2tndjxo/vehicle-systems-overhaul.rar?rlkey=798d1r6rrlcdw53pdeiwsuyfp&st=titaxeu7&dl=0"
+  "manifest": "https://github.com/Alkahest/vehicle-systems-overhaul/blob/main/module.json",
   "compatibility": {
     "minimum": "14",
     "verified": "14"
