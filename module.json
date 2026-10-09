@@ -29,7 +29,8 @@
     ]
   },
   "scripts": [
-    "scripts/movement-units.js"
+    "scripts/movement-units.js",
+    "scripts/heat-systems.js"
   ],
   "esmodules": [
   ],
@@ -39,5 +40,8 @@
       "name": "English",
       "path": "lang/en.json"
     }
+  ],
+  "styles": [
+    "styles/heat-systems.css"
   ]
 }
