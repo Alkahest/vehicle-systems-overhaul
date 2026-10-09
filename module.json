@@ -35,9 +35,9 @@
   ],
   "languages": [
     {
-      "lang": "en-US",
+      "lang": "en",
       "name": "English",
-      "path": "lang/en-US.json"
+      "path": "lang/en.json"
     }
   ]
 }
