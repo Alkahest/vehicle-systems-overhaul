@@ -10,8 +10,6 @@
 	  "flags": {}
 	}
   ],
-  "manifest": "https://github.com/Alkahest/vehicle-systems-overhaul/blob/main/module.json",
-  "download": "https://github.com/Alkahest/vehicle-systems-overhaul/blob/main/module.zip",
   "compatibility": {
     "minimum": "14",
     "verified": "14"
@@ -39,5 +37,7 @@
       "name": "English",
       "path": "lang/en-US.json"
     }
-  ]
+  ],
+  "manifest": "https://github.com/Alkahest/vehicle-systems-overhaul/blob/main/module.json",
+  "download": "https://github.com/Alkahest/vehicle-systems-overhaul/blob/main/module.zip"
 }
