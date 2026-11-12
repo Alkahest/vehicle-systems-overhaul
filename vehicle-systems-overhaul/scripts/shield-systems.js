@@ -25,7 +25,7 @@ function getShieldsMax(actor) {
 
 class ShieldSystemConfig extends dnd5e.applications.actor.BaseConfigSheetV2 {
   static DEFAULT_OPTIONS = {
-    classes: ["shield-systems", "vehicle-systems-overhaul-shield-config"],
+    classes: ["shield-systems", "vehicle-systems-overhaul-shields-config"],
     position: { width: 420 }
   };
   
@@ -127,17 +127,17 @@ function renderVehicleShieldFields(actor, hpRow, editMode) {
       new ShieldSystemConfig({ document: actor }).render({ force: true });
     });
   } else {
-      const heading = group.querySelector(".vehicle-systems-overhaul-shield-inline");
-      const shieldDisplay = heading?.querySelector(".display");
-      const shieldInput = heading?.querySelector("input");
+      const heading = group.querySelector(".vehicle-systems-overhaul-shields-inline");
+      const shieldsDisplay = heading?.querySelector(".display");
+      const shieldsInput = heading?.querySelector("input");
 
-    if (heading && shieldDisplay && shieldInput) {
+    if (heading && shieldsDisplay && shieldsInput) {
       heading.addEventListener("click", event => {
         if (event.target.closest("input")) return;
-        shieldDisplay.hidden = true;
-        shieldInput.hidden = false;
-        shieldInput.focus();
-        shieldInput.select();
+        shieldsDisplay.hidden = true;
+        shieldsInput.hidden = false;
+        shieldsInput.focus();
+        shieldsInput.select();
       });
 
       const finishShieldsEdit = async () => {
@@ -177,7 +177,7 @@ function getShieldTextColor(resource, delta) {
   return 0xffffff;
 }
 
-async function showShieldDelta(actor, resource, previous, current) {
+async function showShieldsDelta(actor, resource, previous, current) {
   const delta = Number(current) - Number(previous);
   if (!Number.isFinite(delta) || delta === 0 || !canvas?.ready) return;
 
@@ -214,7 +214,7 @@ Hooks.on("preUpdateActor", (actor, changes, options, userId) => {
 Hooks.on("updateActor", async (actor, changes, options, userId) => {
   if (actor.type !== "vehicle") return;
   for (const [resource, delta] of Object.entries(options?.shieldDeltas ?? {})) {
-    await showShieldDelta(actor, resource, delta.previous, delta.next);
+    await showShieldsDelta(actor, resource, delta.previous, delta.next);
   }
 });
 

@@ -1,14 +1,14 @@
-.vehicle-systems-overhaul-shields .vehicle-systems-overhaul-shield-inline .counter {
+.vehicle-systems-overhaul-shields .vehicle-systems-overhaul-shields-inline .counter {
   cursor: text;
 }
 
-.vehicle-systems-overhaul-shields .vehicle-systems-overhaul-shield-inline > input.value {
+.vehicle-systems-overhaul-shields .vehicle-systems-overhaul-shields-inline > input.value {
   margin-left: auto;
   width: 4rem;
   text-align: center;
 }
 
-.dnd5e2.vehicle-systems-overhaul-shield-config .final-value,
-.dnd5e.vehicle-systems-overhaul-shield-config .final-value {
+.dnd5e2.vehicle-systems-overhaul-shields-config .final-value,
+.dnd5e.vehicle-systems-overhaul-shields-config .final-value {
   text-align: center;
 }
