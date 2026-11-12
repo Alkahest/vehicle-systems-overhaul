@@ -1,8 +1,8 @@
 {
   "id": "vehicle-systems-overhaul",
   "title": "Vehicle Systems Overhaul",
-  "description": "Movement Units updates, Shield and Heat systems for Vehicle/Starship/Mecha Combat",
-  "version": "0.0.1",
+  "description": "Movement Units updates for Vehicle/Starship Combat",
+  "version": "0.0.3",
   "authors": [
     {
       "name": "Alkahest",
@@ -41,6 +41,7 @@
       "name": "English",
       "path": "lang/en.json"
     }
+  ],
   "styles": [
     "styles/heat-systems.css",
     "styles/shield-systems.css"
