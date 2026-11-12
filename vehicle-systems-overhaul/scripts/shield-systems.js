@@ -1,7 +1,6 @@
 const SHIELD_RESULT = Symbol("shieldResult");
 const SHIELD_APPLICATION = Symbol("shieldApplication");
 const SHIELD_LABEL = `${MODULE_ID}.shield-overlay`;
-const SHIELD_UPDATE = Symbol("shieldUpdate");
 
 Hooks.once("init", () => {
   CONFIG.DND5E.damageTypes.shieldMax = {
@@ -353,15 +352,6 @@ function drawVehicleShieldsOverlay(token) {
   hpBar.addChild(overlay);
 }
 
-function redrawActorTokens(actor) {
-  if (!canvas?.ready || actor?.type !== "vehicle") return;
-
-  for (const token of canvas.tokens?.placeables ?? []) {
-    if (!token.actor) continue;
-    if (!token.actor !== actor) continue;
-    drawVehicleShieldsOverlay(token);
-  }
-}
 Hooks.on("dnd5e.preApplyDamage", (actor, amount, updates, options) => {
   if (actor?.type !== "vehicle" || !hasShields(actor)) return;
 
@@ -402,8 +392,8 @@ Hooks.once("ready", () => {
 
   module.api ??= {};
   Object.assign(module.api, {
-    modifyShields: (actor, amount) => modifyVehicleResource(actor, "shield", amount),
-    rollShields: (actor, formula, options) => rollVehicleResource(actor, "shield", formula, options),
+    modifyShields: (actor, amount) => modifyVehicleResource(actor, "shields", amount),
+    rollShields: (actor, formula, options) => rollVehicleResource(actor, "shields", formula, options),
 
     hasShields,
     getShields,
@@ -412,12 +402,12 @@ Hooks.once("ready", () => {
     async setShieldsEnabled(actor, enabled) {
       if (!actor) throw new Error("No Actor supplied.");
       if (actor?.type !== "vehicle") throw new Error("Actor is not a vehicle.");
-      return actor.update({ [`flags.${MODULE_ID}.shield.enabled`]: Boolean(enabled) });
+      return actor.update({ [`flags.${MODULE_ID}.shields.enabled`]: Boolean(enabled) });
     },
 
     async setShields(actor, value, max = undefined) {
       if (!actor) throw new Error("No Actor supplied.");
-      if (!isVehicle(actor)) throw new Error("Actor is not a vehicle.");
+      if (actor?.type !== "vehicle") throw new Error("Actor is not a vehicle.");
 
       const finalMax = max !== undefined
         ? Math.max(0, Number(max) || 0)
