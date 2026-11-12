@@ -25,7 +25,7 @@ function getShieldsMax(actor) {
 
 class ShieldSystemConfig extends dnd5e.applications.actor.BaseConfigSheetV2 {
   static DEFAULT_OPTIONS = {
-    classes: ["shield-points", "vehicle-systems-overhaul-shield-config"],
+    classes: ["shield-systems", "vehicle-systems-overhaul-shield-config"],
     position: { width: 420 }
   };
   

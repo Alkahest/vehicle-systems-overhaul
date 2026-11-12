@@ -2,11 +2,11 @@
     <div class="form-group">
         <label>Shield System</label>
         <div class="form-fields">
-            <input type="checkbox" name="flags.vehicle-systems-overhaul.shield.enabled" {{checked shield.enabled}}>
+            <input type="checkbox" name="flags.vehicle-systems-overhaul.shields.enabled" {{checked shields.enabled}}>
         </div>
     </div>
 
-    <div class="final-value">{{ shield.value }} / {{ shield.max }}</div>
+    <div class="final-value">{{ shields.value }} / {{ shields.max }}</div>
 
     <fieldset class="card">
         <legend>Maximum Shield Points</legend>
@@ -14,8 +14,8 @@
             <label>Maximum Shield Points</label>
             <div class="form-fields">
                 <input type="number" min="0" step="1"
-                       name="flags.vehicle-systems-overhaul.shield.max"
-                       value="{{ shield.max }}">
+                       name="flags.vehicle-systems-overhaul.shields.max"
+                       value="{{ shields.max }}">
             </div>
         </div>
     </fieldset>
@@ -26,8 +26,8 @@
             <label>Current Shield Points</label>
             <div class="form-fields">
                 <input type="number" min="0" step="1"
-                       name="flags.vehicle-systems-overhaul.shield.value"
-                       value="{{ shield.value }}">
+                       name="flags.vehicle-systems-overhaul.shields.value"
+                       value="{{ shields.value }}">
             </div>
         </div>
     </fieldset>
