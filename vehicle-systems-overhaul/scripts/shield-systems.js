@@ -1,6 +1,5 @@
 const MODULE_ID = "vehicle-systems-overhaul";
 
-
 Hooks.once("init", () => {
   CONFIG.DND5E.damageTypes.shieldMax = {
     label: "Maximum Shield Points",
