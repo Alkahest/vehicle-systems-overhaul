@@ -302,7 +302,7 @@ function drawVehicleShieldsOverlay(token) {
   const shields = getShields(actor);
   if (shields <= 0) return;
 
-  const shieldMax = getShieldsMax(actor);
+  const shieldsMax = getShieldsMax(actor);
   if (shieldsMax <= 0) return;
 
   const barIndex = getHPBarIndex(token);
