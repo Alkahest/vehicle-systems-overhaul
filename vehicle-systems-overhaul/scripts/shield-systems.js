@@ -282,7 +282,7 @@ Hooks.on("dnd5e.preCalculateDamage", (actor, damages, options) => {
   let absorbed = 0;
 
   for (const damage of damages) {
-    if (remainingShield <= 0) break;
+    if (remainingShields <= 0) break;
 
     const value = Number(damage?.value);
     if (!Number.isFinite(value) || value <= 0) continue;
