@@ -14,15 +14,15 @@ Hooks.once("init", () => {
   };
 });
 
-export function hasShields(actor) {
+function hasShields(actor) {
   return actor?.getFlag(MODULE_ID, "shields.enabled") === true;
 }
 
-export function getShields(actor) {
+function getShields(actor) {
   return Math.max(0, Number(actor?.getFlag(MODULE_ID, "shields.value")) || 0);
 }
 
-export function getShieldsMax(actor) {
+function getShieldsMax(actor) {
   return Math.max(0, Number(actor?.getFlag(MODULE_ID, "shields.max")) || 0);
 }
 
