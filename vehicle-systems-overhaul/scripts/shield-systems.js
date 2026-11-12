@@ -295,7 +295,7 @@ function getHPBarIndex(token) {
 }
 
 function drawVehicleShieldsOverlay(token) {
- 
+  removeShieldOverlay(token);
   const actor = token?.actor;
   if (actor?.type !== "vehicle" || !hasShields(actor)) return;
 
@@ -473,4 +473,13 @@ async function modifyVehicleResource(actor, resource, amount) {
   }
 
   throw new Error(`Unknown resource: ${resource}`);
+}
+function removeShieldOverlay(token) {
+  for (const bar of token?.bars?.children ?? []) {
+    for (const child of [...(bar.children ?? [])]) {
+      if (child.label !== SHIELD_LABEL) continue;
+      bar.removeChild(child);
+      child.destroy();
+    }
+  }
 }
