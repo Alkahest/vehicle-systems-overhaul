@@ -73,6 +73,16 @@ class ShieldSystemConfig extends dnd5e.applications.actor.BaseConfigSheetV2 {
   }
 }
 
+function getActivityApplicationActor(application) {
+  const document = application?.document ?? application?.object;
+  return document?.actor
+    ?? document?.parent?.actor
+    ?? (document?.parent?.type ? document.parent : null)
+    ?? application?.activity?.actor
+    ?? application?.item?.actor
+    ?? null;
+}
+
 Hooks.on("renderApplicationV2", (app, element) => {
   //Get Actor and determine if the actor is a vehicle. Short circuit if not.
   const root = element instanceof HTMLElement ? element : element?.[0];
