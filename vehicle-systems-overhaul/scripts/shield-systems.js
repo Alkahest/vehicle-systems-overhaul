@@ -28,7 +28,6 @@ class ShieldSystemConfig extends dnd5e.applications.actor.BaseConfigSheetV2 {
     classes: ["shield-systems", "vehicle-systems-overhaul-shields-config"],
     position: { width: 420 }
   };
-  
   static PARTS = {
     config: {
       template: `modules/${MODULE_ID}/templates/shield-systems-config.hbs`
@@ -48,7 +47,6 @@ class ShieldSystemConfig extends dnd5e.applications.actor.BaseConfigSheetV2 {
     };
     return context;
   }
-  
   
   async _processSubmitData(event, form, formData) {
     const fields = new FormData(form);
@@ -74,7 +72,6 @@ Hooks.on("renderApplicationV2", (app, element) => {
   //Get Actor and determine if the actor is a vehicle. Short circuit if not.
   const actor = app.document ?? app.actor;  
   if (actor.type !== "vehicle") return;
-  
   const sidebar = element.querySelector(".sheet-sidebar");
   if (!sidebar) return;
   const hitPointsLabel = game.i18n.localize("DND5E.HitPoints");  
