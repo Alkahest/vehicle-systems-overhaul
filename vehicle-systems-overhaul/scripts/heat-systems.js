@@ -59,7 +59,7 @@ class HeatSystemConfig extends dnd5e.applications.actor.BaseConfigSheetV2 {  sta
 Hooks.on("renderApplicationV2", (app, element) => {
   //Get Actor and determine if the actor is a vehicle. Short circuit if not.
   const actor = app.document ?? app.actor;
-  if (actor.type !== "vehicle") return;
+  if (actor?.type !== "vehicle") return;
   const sidebar = element.querySelector(".sheet-sidebar");
   if (!sidebar) return;
   const hitPointsLabel = game.i18n.localize("DND5E.HitPoints");  
@@ -185,7 +185,7 @@ async function showHeatDelta(actor, resource, previous, current) {
 }
 
 Hooks.on("preUpdateActor", (actor, changes, options, userId) => {
-  if (actor.type !== "vehicle") return;
+  if (actor?.type !== "vehicle") return;
   const deltas = {};
   const next = getChangedFlagValue(changes, "heat", "value");
   
@@ -197,7 +197,7 @@ Hooks.on("preUpdateActor", (actor, changes, options, userId) => {
 });
 
 Hooks.on("updateActor", async (actor, changes, options, userId) => {
-  if (actor.type !== "vehicle") return;
+  if (actor?.type !== "vehicle") return;
   for (const [resource, delta] of Object.entries(options?.heatDeltas ?? {})) {
     await showHeatDelta(actor, resource, delta.previous, delta.next);
   }

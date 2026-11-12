@@ -1,3 +1,8 @@
+const SHIELD_RESULT = Symbol("shieldResult");
+const SHIELD_APPLICATION = Symbol("shieldApplication");
+const SHIELD_LABEL = `${MODULE_ID}.shield-overlay`;
+const SHIELD_UPDATE = Symbol("shieldUpdate");
+
 Hooks.once("init", () => {
   CONFIG.DND5E.damageTypes.shieldMax = {
     label: "Maximum Shield Points",
@@ -71,7 +76,7 @@ class ShieldSystemConfig extends dnd5e.applications.actor.BaseConfigSheetV2 {
 Hooks.on("renderApplicationV2", (app, element) => {
   //Get Actor and determine if the actor is a vehicle. Short circuit if not.
   const actor = app.document ?? app.actor;  
-  if (actor.type !== "vehicle") return;
+  if (actor?.type !== "vehicle") return;
   const sidebar = element.querySelector(".sheet-sidebar");
   if (!sidebar) return;
   const hitPointsLabel = game.i18n.localize("DND5E.HitPoints");  
@@ -197,7 +202,7 @@ async function showShieldsDelta(actor, resource, previous, current) {
 }
 
 Hooks.on("preUpdateActor", (actor, changes, options, userId) => {
-  if (actor.type !== "vehicle") return;
+  if (actor?.type !== "vehicle") return;
   const deltas = {};
   const next = getChangedFlagValue(changes, "shields", "value");
   
@@ -209,14 +214,136 @@ Hooks.on("preUpdateActor", (actor, changes, options, userId) => {
 });
 
 Hooks.on("updateActor", async (actor, changes, options, userId) => {
-  if (actor.type !== "vehicle") return;
+  if (actor?.type !== "vehicle") return;
   for (const [resource, delta] of Object.entries(options?.shieldDeltas ?? {})) {
     await showShieldsDelta(actor, resource, delta.previous, delta.next);
   }
 });
 
-
 function getChangedFlagValue(changes, resource, field) {
   const nested = foundry.utils.getProperty(changes, `flags.${MODULE_ID}.${resource}.${field}`);
   return nested === undefined ? undefined : Number(nested);
 }
+
+
+Hooks.on("dnd5e.preCalculateDamage", (actor, damages, options) => {
+  if (actor?.type !== "vehicle") return;
+
+  if (hasShields(actor)) {
+    let valueDelta = 0;
+    let maxDelta = 0;
+
+    for (const damage of damages) {
+      const value = Number(damage?.value);
+      if (!Number.isFinite(value) || value === 0) continue;
+
+      switch (damage?.type) {
+        case "shieldsMax":
+          maxDelta -= value;
+          damage.value = 0;
+          break;
+        case "shieldsHealing":
+          valueDelta += value;
+          damage.value = 0;
+          break;
+        case "shieldsMaxHealing":
+          maxDelta += value;
+          damage.value = 0;
+          break;
+      }
+    }
+
+    if (valueDelta || maxDelta) {
+      options[SHIELD_APPLICATION] = { valueDelta, maxDelta };
+    }
+  }
+
+  if (!hasShields(actor)) return;
+
+  let remainingShields = getShields(actor);
+  if (remainingShields <= 0) return;
+
+  let absorbed = 0;
+
+  for (const damage of damages) {
+    if (remainingShield <= 0) break;
+
+    const value = Number(damage?.value);
+    if (!Number.isFinite(value) || value <= 0) continue;
+
+    const type = damage?.type;
+    const isConfiguredDamage =
+      type != null &&
+      Object.prototype.hasOwnProperty.call(CONFIG.DND5E.damageTypes, type);
+
+    const isUntypedDamage = type === undefined;
+    if (!isConfiguredDamage && !isUntypedDamage) continue;
+
+    const blocked = Math.min(value, remainingShields);
+    damage.value = value - blocked;
+    remainingShields -= blocked;
+    absorbed += blocked;
+  }
+
+  if (absorbed > 0) options[SHIELD_RESULT] = { absorbed };
+});
+
+function getHPBarIndex(token) {
+  if (token?.document?.bar1?.attribute === "attributes.hp") return 0;
+  if (token?.document?.bar2?.attribute === "attributes.hp") return 1;
+  return null;
+}
+
+function drawVehicleShieldsOverlay(token) {
+ 
+  const actor = token?.actor;
+  if (actor?.type !== "vehicle" || !hasShields(actor)) return;
+
+  const shields = getShields(actor);
+  if (shields <= 0) return;
+
+  const shieldMax = getShieldsMax(actor);
+  if (shieldsMax <= 0) return;
+
+  const barIndex = getHPBarIndex(token);
+  if (barIndex === null) return;
+
+  const hpBar = token?.bars?.children?.[barIndex];
+  if (!hpBar) return;
+
+  const bounds = hpBar.getLocalBounds();
+  if (!(bounds.width > 0) || !(bounds.height > 0)) return;
+  
+  const fraction = Math.clamp(shields / shieldsMax, 0, 1);
+  if (fraction <= 0) return;
+
+  const width = bounds.width * fraction;
+  
+  const x = bounds.x;
+
+  const y = bounds.y - 1;
+  
+  const height = bounds.height + 2;
+
+  const overlay = new PIXI.Graphics();
+  overlay.label = SHIELD_LABEL;
+  overlay.eventMode = "none";
+
+  overlay.beginFill(0x9b5de5, 0.72);
+  overlay.drawRect(x, y, width, height);
+  overlay.endFill();
+
+  hpBar.addChild(overlay);
+}
+
+function redrawActorTokens(actor) {
+  if (!canvas?.ready || if (actor?.type !== "vehicle")) return;
+
+  for (const token of canvas.tokens?.placeables ?? []) {
+    if (token.actor? !== actor) continue;
+    drawVehicleShieldsOverlay(token);
+  }
+}
+
+Hooks.on("drawToken", token => drawVehicleShieldsOverlay(token));
+Hooks.on("refreshToken", token => drawVehicleShieldsOverlay(token));
