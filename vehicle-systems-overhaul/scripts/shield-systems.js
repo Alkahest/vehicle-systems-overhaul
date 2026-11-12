@@ -52,7 +52,7 @@ class ShieldSystemConfig extends dnd5e.applications.actor.BaseConfigSheetV2 {
   
   async _processSubmitData(event, form, formData) {
     const fields = new FormData(form);
-    const prefix = `flags.${MODULE_ID}.heat.`;
+    const prefix = `flags.${MODULE_ID}.shields.`;
     const numeric = (field, fallback) => {
       const input = fields.get(prefix + field);
       const value = input === null ? fallback : Number(input);
@@ -72,10 +72,9 @@ class ShieldSystemConfig extends dnd5e.applications.actor.BaseConfigSheetV2 {
 
 Hooks.on("renderApplicationV2", (app, element) => {
   //Get Actor and determine if the actor is a vehicle. Short circuit if not.
-  const actor = app.document ?? app.actor;
-  if (actor?.documentName !== "Actor" || actor.type !== "vehicle") {
-    return;
-  }
+  const actor = app.document ?? app.actor;  
+  if (actor.type !== "vehicle") return;
+  
   const sidebar = element.querySelector(".sheet-sidebar");
   if (!sidebar) return;
   const hitPointsLabel = game.i18n.localize("DND5E.HitPoints");  
@@ -141,30 +140,30 @@ function renderVehicleShieldFields(actor, hpRow, editMode) {
         shieldInput.select();
       });
 
-      const finishHeatEdit = async () => {
-        if (heatInput.hidden) return;
-        let next = Number(String(heatInput.value ?? "").trim());
-        const current = getHeat(actor);
+      const finishShieldsEdit = async () => {
+        if (shieldsInput.hidden) return;
+        let next = Number(String(shieldsInput.value ?? "").trim());
+        const current = getShields(actor);
         if (!Number.isFinite(next)) next = current;
-        const maximum = getHeatMax(actor);
+        const maximum = getShieldsMax(actor);
         next = Math.clamp(next, 0, maximum);
-        await actor.update({ [`flags.${MODULE_ID}.heat.value`]: next });
-        const saved = getHeat(actor);
-        heatInput.value = String(saved);
-        heatDisplay.textContent = `${saved} / ${getHeatMax(actor)}`;
-        heatInput.hidden = true;
-        heatDisplay.hidden = false;
+        await actor.update({ [`flags.${MODULE_ID}.shields.value`]: next });
+        const saved = getShields(actor);
+        shieldsInput.value = String(saved);
+        shieldsDisplay.textContent = `${saved} / ${getShieldsMax(actor)}`;
+        shieldsInput.hidden = true;
+        shieldsDisplay.hidden = false;
       };
 
-      heatInput.addEventListener("blur", finishHeatEdit);
-      heatInput.addEventListener("keydown", event => {
+      shieldsInput.addEventListener("blur", finishShieldsEdit);
+      shieldsInput.addEventListener("keydown", event => {
         if (event.key === "Enter") {
           event.preventDefault();
-          heatInput.blur();
+          shieldsInput.blur();
         } else if (event.key === "Escape") {
-          heatInput.value = String(getHeat(actor));
-          heatInput.hidden = true;
-          heatDisplay.hidden = false;
+          shieldsInput.value = String(getShields(actor));
+          shieldsInput.hidden = true;
+          shieldsDisplay.hidden = false;
         }
       });
     }
