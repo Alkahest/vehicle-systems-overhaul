@@ -296,6 +296,7 @@ function getHPBarIndex(token) {
 
 function drawVehicleShieldsOverlay(token) {
   removeShieldOverlay(token);
+  
   const actor = token?.actor;
   if (actor?.type !== "vehicle" || !hasShields(actor)) return;
 
