@@ -229,6 +229,9 @@ function getChangedFlagValue(changes, resource, field) {
 Hooks.on("dnd5e.preCalculateDamage", (actor, damages, options) => {
   if (actor?.type !== "vehicle") return;
 
+  delete options[SHIELD_RESULT];
+  delete options[SHIELD_APPLICATION];
+  
   if (hasShields(actor)) {
     let valueDelta = 0;
     let maxDelta = 0;
