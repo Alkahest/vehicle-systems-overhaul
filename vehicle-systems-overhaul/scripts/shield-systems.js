@@ -124,12 +124,12 @@ function renderVehicleShieldFields(actor, hpRow, editMode) {
       new ShieldSystemConfig({ document: actor }).render({ force: true });
     });
   } else {
-      const heading = group.querySelector(".vehicle-systems-overhaul-shields-inline");
-      const shieldsDisplay = heading?.querySelector(".display");
-      const shieldsInput = heading?.querySelector("input");
+      const shieldsHeading = shieldsRow.querySelector(".vehicle-systems-overhaul-shields-inline");
+      const shieldsDisplay = shieldsHeading?.querySelector(".display");
+      const shieldsInput = shieldsHeading?.querySelector("input");
 
-    if (heading && shieldsDisplay && shieldsInput) {
-      heading.addEventListener("click", event => {
+    if (shieldsHeading && shieldsDisplay && shieldsInput) {
+      shieldsHeading.addEventListener("click", event => {
         if (event.target.closest("input")) return;
         shieldsDisplay.hidden = true;
         shieldsInput.hidden = false;
