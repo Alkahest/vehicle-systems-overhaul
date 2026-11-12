@@ -337,7 +337,7 @@ function drawVehicleShieldsOverlay(token) {
 }
 
 function redrawActorTokens(actor) {
-  if (!canvas?.ready || if (actor?.type !== "vehicle")) return;
+  if (!canvas?.ready || actor?.type !== "vehicle") return;
 
   for (const token of canvas.tokens?.placeables ?? []) {
     if (token.actor? !== actor) continue;
