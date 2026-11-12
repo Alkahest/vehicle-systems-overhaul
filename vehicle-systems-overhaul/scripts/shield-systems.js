@@ -75,6 +75,9 @@ class ShieldSystemConfig extends dnd5e.applications.actor.BaseConfigSheetV2 {
 
 Hooks.on("renderApplicationV2", (app, element) => {
   //Get Actor and determine if the actor is a vehicle. Short circuit if not.
+  const root = element instanceof HTMLElement ? element : element?.[0];
+  if (!root) return;
+  filterVehicleResourceActivityTypes(application, root);
   const actor = app.document ?? app.actor;  
   if (actor?.type !== "vehicle") return;
   const sidebar = element.querySelector(".sheet-sidebar");
@@ -484,6 +487,50 @@ function removeShieldOverlay(token) {
       if (child.label !== SHIELD_LABEL) continue;
       bar.removeChild(child);
       child.destroy();
+    }
+  }
+}
+function filterVehicleResourceActivityTypes(application, root) {
+  const actor = getActivityApplicationActor(application);
+
+  const customValues = new Set([
+    "shieldsMax",
+    "shieldsHealing",
+    "shieldsMaxHealing"
+  ]);
+  const matching = Array.from(root.querySelectorAll("select")).filter(select =>
+    Array.from(select.options).some(option => customValues.has(option.value))
+  );
+  if (!matching.length) return;
+
+  if (actor?.type !== "vehicle") {
+    for (const select of matching) {
+      for (const option of Array.from(select.options)) {
+        if (customValues.has(option.value)) option.remove();
+      }
+    }
+    return;
+  }
+
+  reorderDamageActivityShieldTypes(root);
+}
+
+function reorderDamageActivityShieldTypes(root) {
+  for (const select of root.querySelectorAll("select")) {
+    const shieldsMax = select.querySelector('option[value="shieldsMax"]');
+    if (!shieldsMax) continue;
+
+    const options = Array.from(select.options);
+    const maxHp = options.find(option =>
+      option.textContent?.trim() === "Maximum Hit Points"
+    );
+
+    shieldsMax.remove();
+
+    if (maxHp) {
+      maxHp.after(shieldsMax);
+    } else {
+      select.append(shieldsMax);
     }
   }
 }
