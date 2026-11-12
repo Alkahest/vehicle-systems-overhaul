@@ -77,7 +77,7 @@ Hooks.on("renderApplicationV2", (app, element) => {
   //Get Actor and determine if the actor is a vehicle. Short circuit if not.
   const root = element instanceof HTMLElement ? element : element?.[0];
   if (!root) return;
-  filterVehicleResourceActivityTypes(application, root);
+  filterVehicleResourceActivityTypes(app, root);
   const actor = app.document ?? app.actor;  
   if (actor?.type !== "vehicle") return;
   const sidebar = element.querySelector(".sheet-sidebar");
