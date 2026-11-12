@@ -340,7 +340,8 @@ function redrawActorTokens(actor) {
   if (!canvas?.ready || actor?.type !== "vehicle") return;
 
   for (const token of canvas.tokens?.placeables ?? []) {
-    if (token.actor? !== actor) continue;
+    if (!token.actor) continue;
+    if (!token.actor !== actor) continue;
     drawVehicleShieldsOverlay(token);
   }
 }
