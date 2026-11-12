@@ -1,0 +1,34 @@
+<section class="flexcol">
+    <div class="form-group">
+        <label>Heat System</label>
+        <div class="form-fields">
+            <input type="checkbox" name="flags.vehicle-systems-overhaul.heat.enabled" {{checked heat.enabled}}>
+        </div>
+    </div>
+
+    <div class="final-value">{{ heat.value }} / {{ heat.max }}</div>
+
+    <fieldset class="card">
+        <legend>Maximum Heat</legend>
+        <div class="form-group">
+            <label>Maximum Heat</label>
+            <div class="form-fields">
+                <input type="number" min="0" step="1"
+                       name="flags.vehicle-systems-overhaul.heat.max"
+                       value="{{ heat.max }}">
+            </div>
+        </div>
+    </fieldset>
+
+    <fieldset class="card">
+        <legend>Current Heat</legend>
+        <div class="form-group">
+            <label>Current Heat</label>
+            <div class="form-fields">
+                <input type="number" min="0" step="1"
+                       name="flags.vehicle-systems-overhaul.heat.value"
+                       value="{{ heat.value }}">
+            </div>
+        </div>
+    </fieldset>
+</section>

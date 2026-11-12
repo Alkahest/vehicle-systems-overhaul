@@ -10,3 +10,8 @@
 
 ### Added
 - Initial Heat Config System
+
+## [0.0.3] - 11-12-2026
+
+### Added
+- Initial Shield Config System

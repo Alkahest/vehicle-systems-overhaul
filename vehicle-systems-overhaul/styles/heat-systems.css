@@ -1,0 +1,14 @@
+.vehicle-systems-overhaul-heat .vehicle-systems-overhaul-heat-inline .counter  {
+  cursor: text;
+}
+
+.vehicle-systems-overhaul-heat .vehicle-systems-overhaul-heat-inline > input.value {
+  margin-left: auto;
+  width: 4rem;
+  text-align: center;
+}
+
+.dnd5e2.vehicle-systems-overhaul-heat-config .final-value,
+.dnd5e.vehicle-systems-overhaul-heat-config .final-value {
+  text-align: center;
+}
