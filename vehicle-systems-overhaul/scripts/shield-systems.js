@@ -41,7 +41,7 @@ class ShieldSystemConfig extends dnd5e.applications.actor.BaseConfigSheetV2 {
   
   async _preparePartContext(partId, context, options) {
     context = await super._preparePartContext(partId, context, options);
-    context.shield = { 
+    context.shields = { 
       enabled: hasShields(this.document), 
       value: getShields(this.document), 
       max: getShieldsMax(this.document) 
@@ -171,7 +171,7 @@ function renderVehicleShieldFields(actor, hpRow, editMode) {
 }
 
 function getShieldTextColor(resource, delta) {
-  if (resource === "shield") {
+  if (resource === "shields") {
     return CONFIG.DND5E.tokenHPColors[delta > 0 ? "healing" : "damage"];
   }
   return 0xffffff;
@@ -202,11 +202,11 @@ async function showShieldDelta(actor, resource, previous, current) {
 Hooks.on("preUpdateActor", (actor, changes, options, userId) => {
   if (actor.type !== "vehicle") return;
   const deltas = {};
-  const next = getChangedFlagValue(changes, "shield", "value");
+  const next = getChangedFlagValue(changes, "shields", "value");
   
   if (next !== undefined){ 
     const previous = getShields(actor);
-    if (previous !== next) deltas["shield"] = { previous, next };
+    if (previous !== next) deltas["shields"] = { previous, next };
   }
   if (Object.keys(deltas).length) options.shieldDeltas = deltas;
 });
@@ -217,6 +217,7 @@ Hooks.on("updateActor", async (actor, changes, options, userId) => {
     await showShieldDelta(actor, resource, delta.previous, delta.next);
   }
 });
+
 
 function getChangedFlagValue(changes, resource, field) {
   const nested = foundry.utils.getProperty(changes, `flags.${MODULE_ID}.${resource}.${field}`);
