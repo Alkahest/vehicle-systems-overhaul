@@ -345,6 +345,132 @@ function redrawActorTokens(actor) {
     drawVehicleShieldsOverlay(token);
   }
 }
+Hooks.on("dnd5e.preApplyDamage", (actor, amount, updates, options) => {
+  if (actor?.type !== "vehicle" || !hasShields(actor)) return;
 
+  let shieldsValue = getShields(actor);
+  let shieldsMax = getShieldsMax(actor);
+  let changed = false;
+
+  const application = options?.[SHIELD_APPLICATION];
+  if (application) {
+    shieldsMax = Math.max(0, shieldsMax + Number(application.maxDelta || 0));
+    shieldsValue = Math.clamp(
+      shieldsValue + Number(application.valueDelta || 0),
+      0,
+      shieldsMax
+    );
+    changed = true;
+    delete options[SHIELD_APPLICATION];
+  }
+
+  const result = options?.[SHIELD_RESULT];
+  if (result?.absorbed) {
+    shieldsValue = Math.max(shieldsValue - Number(result.absorbed), 0);
+    changed = true;
+    delete options[SHIELD_RESULT];
+  }
+
+  if (!changed) return;
+
+  updates[`flags.${MODULE_ID}.shields.max`] = shieldsMax;
+  updates[`flags.${MODULE_ID}.shields.value`] = shieldsValue;
+});
 Hooks.on("drawToken", token => drawVehicleShieldsOverlay(token));
 Hooks.on("refreshToken", token => drawVehicleShieldsOverlay(token));
+
+Hooks.once("ready", () => {
+  const module = game.modules.get(MODULE_ID);
+  if (!module) return;
+
+  module.api ??= {};
+  Object.assign(module.api, {
+    modifyShields: (actor, amount) => modifyVehicleResource(actor, "shield", amount),
+    rollShields: (actor, formula, options) => rollVehicleResource(actor, "shield", formula, options),
+
+    hasShields,
+    getShields,
+    getShieldsMax,
+
+    async setShieldsEnabled(actor, enabled) {
+      if (!actor) throw new Error("No Actor supplied.");
+      if (actor?.type !== "vehicle") throw new Error("Actor is not a vehicle.");
+      return actor.update({ [`flags.${MODULE_ID}.shield.enabled`]: Boolean(enabled) });
+    },
+
+    async setShields(actor, value, max = undefined) {
+      if (!actor) throw new Error("No Actor supplied.");
+      if (!isVehicle(actor)) throw new Error("Actor is not a vehicle.");
+
+      const finalMax = max !== undefined
+        ? Math.max(0, Number(max) || 0)
+        : getShieldsMax(actor);
+      const finalValue = Math.clamp(Number(value) || 0, 0, finalMax);
+
+      const updates = {
+        [`flags.${MODULE_ID}.shields.value`]: finalValue
+      };
+
+      if (max !== undefined) {
+        updates[`flags.${MODULE_ID}.shields.max`] = finalMax;
+      }
+
+      return actor.update(updates);
+    },
+
+    async restoreShields(actor) {
+      if (!actor) throw new Error("No Actor supplied.");
+      if (actor?.type !== "vehicle") throw new Error("Actor is not a vehicle.");
+
+      return actor.update({
+        [`flags.${MODULE_ID}.shields.value`]: getShieldsMax(actor)
+      });
+    },
+    redraw(token) {
+      drawVehicleShieldsOverlay(token);
+    }
+  });
+});
+
+async function rollVehicleResource(actor, resource, formula, { operation="add", label=null }={}) {
+  if (!actor) throw new Error("No Actor supplied.");
+  if (actor?.type !== "vehicle") throw new Error("Actor is not a vehicle.");
+
+  const roll = await (new Roll(String(formula), actor.getRollData())).evaluate();
+  const total = Number(roll.total) || 0;
+
+  let delta;
+  switch (operation) {
+    case "restore": delta = Math.abs(total); break;
+    case "drain": delta = -Math.abs(total); break;
+    case "add": delta = total; break;
+    case "remove": delta = -total; break;
+    default: throw new Error(`Unknown resource operation: ${operation}`);
+  }
+
+  await modifyVehicleResource(actor, resource, delta);
+
+  await roll.toMessage({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    flavor: label ?? `${"Shields"}: ${operation}`
+  });
+
+  return roll;
+}
+
+async function modifyVehicleResource(actor, resource, amount) {
+  if (!actor) throw new Error("No Actor supplied.");
+  if (actor?.type !== "vehicle") throw new Error("Actor is not a vehicle.");
+
+  const delta = Number(amount);
+  if (!Number.isFinite(delta)) throw new Error("Resource change must be numeric.");
+
+  if (resource === "shields") {
+    if (!hasShields(actor)) return actor;
+    const max = getShieldsMax(actor);
+    const value = Math.clamp(getShields(actor) + delta, 0, max);
+    return actor.update({ [`flags.${MODULE_ID}.shields.value`]: value });
+  }
+
+  throw new Error(`Unknown resource: ${resource}`);
+}
