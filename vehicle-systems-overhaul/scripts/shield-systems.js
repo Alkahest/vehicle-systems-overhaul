@@ -3,15 +3,8 @@ const SHIELD_APPLICATION = Symbol("shieldApplication");
 const SHIELD_LABEL = `${MODULE_ID}.shield-overlay`;
 
 Hooks.once("init", () => {
-  CONFIG.DND5E.damageTypes.shieldMax = {
-    label: "Maximum Shield Points",
-    isPhysical: false
-  };
-  CONFIG.DND5E.healingTypes.shieldHealing = {
+  CONFIG.DND5E.healingTypes.shieldsHealing = {
     label: "Shield Points"
-  };
-  CONFIG.DND5E.healingTypes.shieldMaxHealing = {
-    label: "Maximum Shield Points"
   };
 });
 
@@ -246,30 +239,21 @@ Hooks.on("dnd5e.preCalculateDamage", (actor, damages, options) => {
   
   if (hasShields(actor)) {
     let valueDelta = 0;
-    let maxDelta = 0;
 
     for (const damage of damages) {
       const value = Number(damage?.value);
       if (!Number.isFinite(value) || value === 0) continue;
 
       switch (damage?.type) {
-        case "shieldsMax":
-          maxDelta -= value;
-          damage.value = 0;
-          break;
         case "shieldsHealing":
           valueDelta += value;
-          damage.value = 0;
-          break;
-        case "shieldsMaxHealing":
-          maxDelta += value;
           damage.value = 0;
           break;
       }
     }
 
-    if (valueDelta || maxDelta) {
-      options[SHIELD_APPLICATION] = { valueDelta, maxDelta };
+    if (valueDelta) {
+      options[SHIELD_APPLICATION] = { valueDelta };
     }
   }
 
@@ -361,7 +345,6 @@ Hooks.on("dnd5e.preApplyDamage", (actor, amount, updates, options) => {
 
   const application = options?.[SHIELD_APPLICATION];
   if (application) {
-    shieldsMax = Math.max(0, shieldsMax + Number(application.maxDelta || 0));
     shieldsValue = Math.clamp(
       shieldsValue + Number(application.valueDelta || 0),
       0,

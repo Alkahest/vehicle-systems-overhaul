@@ -15,3 +15,6 @@
 
 ### Added
 - Initial Shield Config System
+
+## [0.1.0] - 11-18-2026
+- Refactored Shield Damage and Healing
