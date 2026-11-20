@@ -1,3 +1,5 @@
+const MODULE_ID = "vehicle-systems-overhaul";
+
 const SHIELD_RESULT = Symbol("shieldResult");
 const SHIELD_APPLICATION = Symbol("shieldApplication");
 const SHIELD_LABEL = `${MODULE_ID}.shield-overlay`;

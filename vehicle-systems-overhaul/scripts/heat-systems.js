@@ -45,26 +45,27 @@ class HeatSystemConfig extends dnd5e.applications.actor.BaseConfigSheetV2 {
     return context;
   }
 
-async _processSubmitData(event, form, formData) {
-  const fields = new FormData(form);
-  const flagPrefix = `flags.${MODULE_ID}.heat.`;
-  const attributePrefix = "system.attributes.heat.";
-
-  const numeric = (field, fallback) => {
-    const input = fields.get(attributePrefix + field);
-    const value = input === null ? fallback : Number(input);
-    return Number.isFinite(value) ? Math.max(0, Math.trunc(value)) : fallback;
-  };
-
-  const max = numeric("max", getHeatMax(this.document));
-  const value = Math.min(max, numeric("value", getHeat(this.document)));
-  const enabled = fields.has(flagPrefix + "enabled");
-
-  await this.document.update({
-    [flagPrefix + "enabled"]: enabled,
-    [attributePrefix + "max"]: max,
-    [attributePrefix + "value"]: value
-  });
+  async _processSubmitData(event, form, formData) {
+    const fields = new FormData(form);
+    const flagPrefix = `flags.${MODULE_ID}.heat.`;
+    const attributePrefix = "system.attributes.heat.";
+  
+    const numeric = (field, fallback) => {
+      const input = fields.get(attributePrefix + field);
+      const value = input === null ? fallback : Number(input);
+      return Number.isFinite(value) ? Math.max(0, Math.trunc(value)) : fallback;
+    };
+  
+    const max = numeric("max", getHeatMax(this.document));
+    const value = Math.min(max, numeric("value", getHeat(this.document)));
+    const enabled = fields.has(flagPrefix + "enabled");
+  
+    await this.document.update({
+      [flagPrefix + "enabled"]: enabled,
+      [attributePrefix + "max"]: max,
+      [attributePrefix + "value"]: value
+    });
+  }
 }
 Hooks.on("renderApplicationV2", (app, element) => {
   // Get Actor and determine if the actor is a vehicle.
